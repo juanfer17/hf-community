@@ -31,8 +31,11 @@ public class TeamController {
 
 
     @GetMapping
-    public ResponseEntity<List<TeamDTO>> getAllTeams(@PathVariable String modality) {
-        return ResponseEntity.ok(teamService.getAllTeams(modality));
+    public ResponseEntity<List<TeamDTO>> getAllTeams(
+            @PathVariable("modality") String modality
+    ) {
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        return ResponseEntity.ok(teamService.getAllTeams(modalityId));
     }
 
     @GetMapping("/with-logo")

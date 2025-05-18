@@ -63,12 +63,11 @@ public class TeamService {
         return teamMapper.toDto(teamRepository.save(team));
     }
 
-    public List<TeamDTO> getAllTeams(String modality) {
-        return teamRepository.findByModality_NameIgnoreCase(modality).stream()
+    public List<TeamDTO> getAllTeams(Long modalityId) {
+        return teamRepository.findByModality_Id(modalityId).stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }
-
     public List<TeamDTO> getAllTeamsWithLogo(String modality) {
         return teamRepository.findByLogoUrlIsNotNullAndModality_NameIgnoreCase(modality).stream()
                 .map(teamMapper::toDto)
