@@ -74,8 +74,8 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-    public List<TeamDTO> getTeamsByTournament(Long tournamentId, String modality) {
-        return teamRepository.findByTournamentIdAndModality_NameIgnoreCase(tournamentId, modality).stream()
+    public List<TeamDTO> getTeamsByTournament(Long tournamentId, Long modalityId) {
+        return teamRepository.findByTournamentIdAndModality_Id(tournamentId, modalityId).stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }

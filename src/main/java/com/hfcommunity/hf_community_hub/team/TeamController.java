@@ -43,12 +43,14 @@ public class TeamController {
         return ResponseEntity.ok(teamService.getAllTeamsWithLogo(modality));
     }
 
-    @GetMapping("/torneo/{torneoId}")
+    @GetMapping("/tournament/{torneoId}")
     public ResponseEntity<List<TeamDTO>> getTeamsByTorneo(
             @PathVariable String modality,
             @PathVariable Long torneoId
     ) {
-        return ResponseEntity.ok(teamService.getTeamsByTournament(torneoId, modality));
+
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        return ResponseEntity.ok(teamService.getTeamsByTournament(torneoId, modalityId));
     }
 
     @GetMapping("/dt/{dtId}")

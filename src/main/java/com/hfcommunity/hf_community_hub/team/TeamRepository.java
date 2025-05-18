@@ -12,7 +12,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     List<Team> findByLogoUrlIsNotNullAndModality_NameIgnoreCase(String modality);
 
-    List<Team> findByTournamentIdAndModality_NameIgnoreCase(Long tournamentId, String modality);
-
     List<Team> findByHeadCoachId(Long playerId);
+
+    List<Team> findByTournamentIdAndModality_Id(Long tournamentId, Long modalityId);
+
 }
