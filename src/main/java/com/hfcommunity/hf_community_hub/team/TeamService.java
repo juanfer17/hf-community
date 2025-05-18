@@ -68,8 +68,9 @@ public class TeamService {
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }
-    public List<TeamDTO> getAllTeamsWithLogo(String modality) {
-        return teamRepository.findByLogoUrlIsNotNullAndModality_NameIgnoreCase(modality).stream()
+
+    public List<TeamDTO> getAllTeamsWithLogo(Long modality) {
+        return teamRepository.findByLogoUrlIsNotNullAndModality_Id_NameIgnoreCase(modality).stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }
