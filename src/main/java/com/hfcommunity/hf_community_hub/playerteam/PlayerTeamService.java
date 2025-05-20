@@ -22,22 +22,22 @@ public class PlayerTeamService {
     private final ModalityRepository modalityRepository;
     private final PlayerTeamMapper playerTeamMapper;
 
-    public void registerPlayerToTeam(Long playerId, Long teamId, String modalityName) {
-        Modality modality = modalityRepository.findByNameIgnoreCase(modalityName)
+    public void registerPlayerToTeam(PlayerTeamDTO playerTeamDTO, Long modalityId) {
+        Modality modality = modalityRepository.findById(modalityId)
                 .orElseThrow(() -> new EntityNotFoundException("Modalidad no encontrada"));
 
-        if (playerTeamRepository.existsByPlayerIdAndTeamIdAndModality(playerId, teamId, modality)) {
+        if (playerTeamRepository.existsByPlayerIdAndTeamIdAndModality(playerTeamDTO.getPlayerId(), playerTeamDTO.getTeamId(), modality)) {
             throw new IllegalArgumentException("Jugador ya registrado en ese equipo y modalidad");
         }
 
-        Player player = playerRepository.findById(playerId)
+        Player player = playerRepository.findById(playerTeamDTO.getPlayerId())
                 .orElseThrow(() -> new EntityNotFoundException("Jugador no encontrado"));
 
-        Team team = teamRepository.findById(teamId)
+        Team team = teamRepository.findById(playerTeamDTO.getTeamId())
                 .orElseThrow(() -> new EntityNotFoundException("Equipo no encontrado"));
 
         PlayerTeam entity = new PlayerTeam();
-        entity.setId(new PlayerTeamId(playerId, teamId));
+        entity.setId(new PlayerTeamId(playerTeamDTO.getPlayerId(), playerTeamDTO.getTeamId()));
         entity.setPlayer(player);
         entity.setTeam(team);
         entity.setModality(modality);
@@ -45,8 +45,8 @@ public class PlayerTeamService {
         playerTeamRepository.save(entity);
     }
 
-    public List<PlayerTeamDTO> getPlayersByTeam(Long teamId, String modalityName) {
-        Modality modality = modalityRepository.findByNameIgnoreCase(modalityName)
+    public List<PlayerTeamDTO> getPlayersByTeam(Long teamId, Long modalityId) {
+        Modality modality = modalityRepository.findById(modalityId)
                 .orElseThrow(() -> new EntityNotFoundException("Modalidad no encontrada"));
 
         return playerTeamRepository.findByTeamIdAndModality(teamId, modality)
@@ -55,8 +55,8 @@ public class PlayerTeamService {
                 .toList();
     }
 
-    public List<PlayerTeamDTO> getTeamsByPlayer(Long playerId, String modalityName) {
-        Modality modality = modalityRepository.findByNameIgnoreCase(modalityName)
+    public List<PlayerTeamDTO> getTeamsByPlayer(Long playerId, Long modalityId) {
+        Modality modality = modalityRepository.findById(modalityId)
                 .orElseThrow(() -> new EntityNotFoundException("Modalidad no encontrada"));
 
         return playerTeamRepository.findByPlayerIdAndModality(playerId, modality)

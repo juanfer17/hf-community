@@ -30,7 +30,7 @@ public class PlayerTeam {
     @JoinColumn(name = "equipo_id")
     private Team team;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modalidad_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "modalidad_id")
     private Modality modality;
 }

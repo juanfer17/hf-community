@@ -1,5 +1,7 @@
 package com.hfcommunity.hf_community_hub.playerteam;
 
+import com.hfcommunity.hf_community_hub.common.enums.ModalityEnum;
+import com.hfcommunity.hf_community_hub.team.TeamCreateDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,11 @@ public class PlayerTeamController {
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(
-            @RequestParam Long playerId,
-            @RequestParam Long teamId,
-            @PathVariable String modality
+            @PathVariable String modality,
+            @RequestBody PlayerTeamDTO playerTeamDTO
     ) {
-        playerTeamService.registerPlayerToTeam(playerId, teamId, modality.toUpperCase());
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        playerTeamService.registerPlayerToTeam(playerTeamDTO, modalityId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -29,14 +31,17 @@ public class PlayerTeamController {
             @PathVariable String modality,
             @PathVariable Long teamId
     ) {
-        return ResponseEntity.ok(playerTeamService.getPlayersByTeam(teamId, modality.toUpperCase()));
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        return ResponseEntity.ok(playerTeamService.getPlayersByTeam(teamId, modalityId));
     }
+
 
     @GetMapping("/player/{playerId}")
     public ResponseEntity<List<PlayerTeamDTO>> getByPlayer(
             @PathVariable String modality,
             @PathVariable Long playerId
     ) {
-        return ResponseEntity.ok(playerTeamService.getTeamsByPlayer(playerId, modality.toUpperCase()));
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        return ResponseEntity.ok(playerTeamService.getTeamsByPlayer(playerId, modalityId));
     }
 }

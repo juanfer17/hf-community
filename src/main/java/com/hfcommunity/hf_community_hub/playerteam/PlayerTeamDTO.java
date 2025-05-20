@@ -12,5 +12,4 @@ import lombok.Setter;
 public class PlayerTeamDTO {
     private Long playerId;
     private Long teamId;
-    private String modality;
 }
