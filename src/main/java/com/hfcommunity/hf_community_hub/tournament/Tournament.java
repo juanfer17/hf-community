@@ -22,7 +22,7 @@ public class Tournament {
     @Column(name = "nombre", nullable = false, unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "modalidad_id", nullable = false)
     private Modality modality;
 
