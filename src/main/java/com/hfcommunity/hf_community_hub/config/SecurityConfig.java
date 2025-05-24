@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register", "/api/tournaments", "/api/matches" , "/api/statistics/**" , "/api/assistance").permitAll()
+                        .requestMatchers("/api/login", "/api/register", "/api/*/tournaments", "/api/*/matches" , "/api/*/statistics/**" , "/api/assistance").permitAll()
                         .requestMatchers("/api/sitemap").hasRole("SUPERADMIN")
                         .anyRequest().authenticated()
                 )
