@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/assistance")
@@ -23,18 +24,18 @@ public class AssistanceController {
         if (ip == null) ip = httpRequest.getRemoteAddr();
 
         if (!rateLimiterService.isAllowed(ip)) {
-            return ResponseEntity.status(429).body("Demasiados intentos. Espera un momento.");
+            return ResponseEntity.status(429).body(Map.of("message", "Demasiados intentos. Espera un momento."));
         }
 
         if (request.getName() == null || request.getName().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("El nombre es obligatorio.");
+            return ResponseEntity.badRequest().body(Map.of("message", "El nombre es obligatorio."));
         }
 
         try {
             service.register(request.getName(), httpRequest);
-            return ResponseEntity.status(201).body("Asistencia registrada correctamente.");
+            return ResponseEntity.status(201).body(Map.of("message", "Asistencia registrada correctamente."));
         } catch (RuntimeException ex) {
-            return ResponseEntity.status(429).body(ex.getMessage());
+            return ResponseEntity.status(429).body(Map.of("message", ex.getMessage()));
         }
     }
 

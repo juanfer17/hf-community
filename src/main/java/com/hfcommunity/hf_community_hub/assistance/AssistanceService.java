@@ -30,6 +30,11 @@ public class AssistanceService {
         repository.save(asistencia);
     }
 
+    private String extractClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        return (ip != null) ? ip : request.getRemoteAddr();
+    }
+
     public List<AssistanceDTO> getAll(Authentication authentication) {
         boolean isAdmin = authentication != null &&
                 authentication.getAuthorities().stream()
@@ -44,12 +49,5 @@ public class AssistanceService {
                         isAdmin ? a.getIp() : null
                 ))
                 .collect(Collectors.toList());
-    }
-
-    private String extractClientIp(HttpServletRequest request) {
-        String forwarded = request.getHeader("X-Forwarded-For");
-        return (forwarded != null && !forwarded.isBlank())
-                ? forwarded.split(",")[0].trim()
-                : request.getRemoteAddr();
     }
 }
