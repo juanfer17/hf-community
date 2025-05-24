@@ -1,17 +1,18 @@
-# Usa Maven + JDK 21
+# Etapa de construcción
 FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean package
 
-# Establece el directorio de trabajo
+# Etapa de ejecución
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-# Copia todo el proyecto
-COPY . .
+# Copia el .jar generado desde la etapa anterior
+COPY --from=build /app/target/*.jar app.jar
 
-# Da permisos y construye
-RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean install
+# Expone el puerto estándar de Spring Boot
+EXPOSE 8080
 
-# ---- Stage final (opcional para Spring Boot) ----
-# FROM eclipse-temurin:21-jdk
-# WORKDIR /app
-# COPY --from=build /app/target/*.jar app.jar
-# ENTRYPOINT ["java", "-jar", "app.jar"]
+# Ejecuta el JAR
+ENTRYPOINT ["java", "-jar", "app.jar"]
