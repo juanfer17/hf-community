@@ -38,6 +38,7 @@ public class AssistanceService {
 
         return repository.findAll().stream()
                 .map(a -> new AssistanceDTO(
+                        a.getId(),
                         a.getName(),
                         a.getDateTime(),
                         isAdmin ? a.getIp() : null
