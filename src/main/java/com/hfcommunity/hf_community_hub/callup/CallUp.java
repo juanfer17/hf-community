@@ -30,7 +30,7 @@ public class CallUp {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "modalidad_id", nullable = false)
     private Modality modality;
 }
