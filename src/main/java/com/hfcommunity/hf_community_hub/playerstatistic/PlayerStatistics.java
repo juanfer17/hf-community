@@ -3,6 +3,7 @@ package com.hfcommunity.hf_community_hub.playerstatistic;
 import com.hfcommunity.hf_community_hub.match.Match;
 import com.hfcommunity.hf_community_hub.modality.Modality;
 import com.hfcommunity.hf_community_hub.player.Player;
+import com.hfcommunity.hf_community_hub.tournament.Tournament;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
@@ -45,4 +46,16 @@ public class PlayerStatistics {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "modalidad_id", nullable = false)
     private Modality modality;
+
+    @Min(0)
+    @Column(name = "mvps")
+    private Integer mvpCount;
+
+    @Min(0)
+    @Column(name = "menciones")
+    private Integer mentionsCount;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "torneo_id", nullable = false)
+    private Tournament tournament;
 }

@@ -35,4 +35,14 @@ public class PlayerStatisticsService {
                 .map(mapper::toDTO)
                 .toList();
     }
+
+
+    public List<PlayerStatisticsDTO> getTopMvps(Long tournamentId, Long modalityId) {
+        return repository.findTop10ByTournamentIdAndModalityIdOrderBySumMvpsDesc(tournamentId, modalityId);
+    }
+
+    public List<PlayerStatisticsDTO> getTopMentions(Long tournamentId, Long modalityId) {
+        return repository.findTop10ByTournamentIdAndModalityIdOrderBySumMentionsDesc(tournamentId, modalityId);
+    }
+
 }

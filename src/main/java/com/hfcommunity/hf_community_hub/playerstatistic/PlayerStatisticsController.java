@@ -43,4 +43,24 @@ public class PlayerStatisticsController {
         List<PlayerStatisticsDTO> ownGoals = service.getTopOwnGoalScorers(tournamentId, modalityId);
         return ResponseEntity.ok(ownGoals);
     }
+
+    @GetMapping("/top-mvps")
+    public ResponseEntity<List<PlayerStatisticsDTO>> getTopMvps(
+            @PathVariable("modality") String modality,
+            @RequestParam("tournamentId") Long tournamentId
+    ) {
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        List<PlayerStatisticsDTO> mvps = service.getTopMvps(tournamentId, modalityId);
+        return ResponseEntity.ok(mvps);
+    }
+
+    @GetMapping("/top-mentions")
+    public ResponseEntity<List<PlayerStatisticsDTO>> getTopMentions(
+            @PathVariable("modality") String modality,
+            @RequestParam("tournamentId") Long tournamentId
+    ) {
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        List<PlayerStatisticsDTO> mentions = service.getTopMentions(tournamentId, modalityId);
+        return ResponseEntity.ok(mentions);
+    }
 }
