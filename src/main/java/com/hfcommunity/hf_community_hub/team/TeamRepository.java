@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-    List<Team> findByModality_Id(Long modalityId);
+    List<Team> findByModality_IdAndTournament_Id(Long modalityId, Long tournamentId);
 
     List<Team> findByLogoUrlIsNotNullAndModality_Id(Long modality);
 

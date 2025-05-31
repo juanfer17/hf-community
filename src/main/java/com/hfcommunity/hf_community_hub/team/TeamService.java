@@ -63,8 +63,8 @@ public class TeamService {
         return teamMapper.toDto(teamRepository.save(team));
     }
 
-    public List<TeamDTO> getAllTeams(Long modalityId) {
-        return teamRepository.findByModality_Id(modalityId).stream()
+    public List<TeamDTO> getAllTeams(Long modalityId, Long tournamentId) {
+        return teamRepository.findByModality_IdAndTournament_Id(modalityId, tournamentId ).stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }

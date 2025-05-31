@@ -84,11 +84,14 @@ public class MatchService {
         return matchMapper.toDto(savedMatch);
     }
 
-    public List<MatchDTO> getAllMatchesByModality(Long modalityId) {
+    public List<MatchDTO> getAllMatchesByModality(Long modalityId, Long tournamentId) {
         Modality modality = modalityRepository.findById(modalityId)
                 .orElseThrow(() -> new IllegalArgumentException("Modalidad no encontrada"));
 
-        return matchRepository.findByModalityOrderByDateDesc(modality).stream()
+        Tournament tournament = tournamentRepository.findById(tournamentId)
+                .orElseThrow(() -> new IllegalArgumentException("Torneo no encontrado para la modalidad '" + modality.getName() + "'"));
+
+        return matchRepository.findByModalityAndTournamentOrderByDateDesc(modality, tournament).stream()
                 .map(matchMapper::toDto)
                 .toList();
     }

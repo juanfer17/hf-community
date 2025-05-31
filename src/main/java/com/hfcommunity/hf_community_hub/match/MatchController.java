@@ -30,9 +30,10 @@ public class MatchController {
 
     @GetMapping
     public ResponseEntity<List<MatchDTO>> getAllMatches(
-            @PathVariable("modality") String modality
+            @PathVariable("modality") String modality,
+            @RequestParam("tournamentId") Long tournamentId
     ) {
         Long modalityId = ModalityEnum.fromName(modality).getId();
-        return ResponseEntity.ok(matchService.getAllMatchesByModality(modalityId));
+        return ResponseEntity.ok(matchService.getAllMatchesByModality(modalityId, tournamentId));
     }
 }
