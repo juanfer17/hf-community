@@ -16,12 +16,11 @@ spring:
     properties:
       hibernate:
         format_sql: false
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        transaction:
-          jta:
-            platform: null
 
 logging:
   level:
     org.hibernate.SQL: OFF
     org.hibernate.type.descriptor.sql: OFF
+
+server:
+  port: ${PORT:8080}
