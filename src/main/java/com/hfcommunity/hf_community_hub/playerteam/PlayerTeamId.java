@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -20,4 +21,17 @@ public class PlayerTeamId implements Serializable {
 
     @Column(name = "equipo_id")
     private Long teamId;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PlayerTeamId that)) return false;
+        return Objects.equals(playerId, that.playerId) &&
+                Objects.equals(teamId, that.teamId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(playerId, teamId);
+    }
 }
