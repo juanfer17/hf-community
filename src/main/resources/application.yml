@@ -7,28 +7,21 @@ spring:
     username: postgres
     password: QFjDPSiQPOqXHbnxuWjxsxoSuDhyyyHp
     driver-class-name: org.postgresql.Driver
-    hikari:
-      minimum-idle: 5
-      maximum-pool-size: 10
-      idle-timeout: 30000
-      connection-timeout: 20000
-      max-lifetime: 1800000
 
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: false
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
-        format_sql: false
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        transaction:
+          jta:
+            platform: null
 
 logging:
   level:
-    com.zaxxer.hikari: DEBUG
-    org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: DEBUG
-    org.hibernate.SQL: OFF
-    org.hibernate.type.descriptor.sql: OFF
-
-server:
-  port: ${PORT:8080}
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql: TRACE
