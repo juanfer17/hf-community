@@ -1,6 +1,5 @@
 package com.hfcommunity.hf_community_hub.config;
 
-
 import com.hfcommunity.hf_community_hub.security.JwtAuthenticationFilter;
 import com.hfcommunity.hf_community_hub.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +38,7 @@ public class SecurityConfig {
                                 "/api/*/statistics/*",
                                 "/api/assistance",
                                 "/api/*/standings/*",
-                                "/api/*/teams/*",
+                                "/api/*/teams",
                                 "/api/*/news",
                                 "/api/*/callups",
                                 "/api/*/offers/*",
