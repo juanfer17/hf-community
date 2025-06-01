@@ -1,0 +1,26 @@
+# Ignorar la carpeta target (archivos compilados de Maven)
+target/
+
+# Ignorar la configuración de Maven wrapper (si no la usas dentro del contenedor)
+.mvn/
+
+# Ignorar archivos de configuración de IDEs y editor de código
+.idea/
+*.iml
+.vscode/
+
+# Ignorar archivos del sistema operativo
+.DS_Store
+
+# Ignorar logs
+*.log
+
+# Ignorar archivos de git
+.git/
+.gitmodules
+
+# Ignorar archivos de entornos locales
+*.env
+
+# Otros archivos innecesarios
+*.class
