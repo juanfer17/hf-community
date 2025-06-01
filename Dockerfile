@@ -1,27 +1,18 @@
-# Fase de construcción
+# Etapa de construcción
 FROM maven:3.9.6-eclipse-temurin-21 AS build
+WORKDIR /app
+COPY . .
+RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean package
 
+# Etapa de ejecución
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
-# Copiar el pom.xml, mvnw y la carpeta .mvn
-COPY pom.xml mvnw .mvn/ ./
-
-# Dar permisos al archivo mvnw y ejecutar la dependencia de Maven
-RUN chmod +x ./mvnw && ./mvnw dependency:go-offline -B
-
-# Copiar el código fuente
-COPY src ./src
-
-# Ejecutar el build de Maven
-RUN ./mvnw clean package -DskipTests -B
-
-# Fase de producción
-FROM eclipse-temurin:21-jdk-alpine
-
-WORKDIR /app
-
-# Copiar el archivo .jar desde la fase de construcción
+# Copia el .jar generado desde la etapa anterior
 COPY --from=build /app/target/*.jar app.jar
 
-# Ejecutar el archivo .jar
+# Expone el puerto estándar de Spring Boot
+EXPOSE 8080
+
+# Ejecuta el JAR
 ENTRYPOINT ["java", "-jar", "app.jar"]
