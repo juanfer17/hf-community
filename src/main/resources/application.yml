@@ -7,6 +7,12 @@ spring:
     username: postgres
     password: QFjDPSiQPOqXHbnxuWjxsxoSuDhyyyHp
     driver-class-name: org.postgresql.Driver
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 30000
+      connection-timeout: 20000
+      max-lifetime: 1800000
 
   jpa:
     hibernate:
@@ -19,6 +25,8 @@ spring:
 
 logging:
   level:
+    com.zaxxer.hikari: DEBUG
+    org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl: DEBUG
     org.hibernate.SQL: OFF
     org.hibernate.type.descriptor.sql: OFF
 
