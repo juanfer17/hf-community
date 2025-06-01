@@ -6,6 +6,7 @@ import com.hfcommunity.hf_community_hub.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -29,7 +30,21 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register", "/api/*/tournaments", "/api/*/matches" , "/api/*/statistics/*" , "/api/assistance", "/api/*/standings/*", "/api/*/teams" ).permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(
+                                "/api/login",
+                                "/api/register",
+                                "/api/*/tournaments",
+                                "/api/*/matches",
+                                "/api/*/statistics/*",
+                                "/api/assistance",
+                                "/api/*/standings/*",
+                                "/api/*/teams/*",
+                                "/api/*/news",
+                                "/api/*/callups",
+                                "/api/*/offers/*",
+                                "/api/*/player-teams/**"
+                        ).permitAll()
                         .requestMatchers("/api/sitemap").hasRole("SUPERADMIN")
                         .anyRequest().authenticated()
                 )

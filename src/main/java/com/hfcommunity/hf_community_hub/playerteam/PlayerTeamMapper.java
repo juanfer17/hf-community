@@ -8,5 +8,6 @@ public interface PlayerTeamMapper {
 
     @Mapping(source = "player.id", target = "playerId")
     @Mapping(source = "team.id", target = "teamId")
+    @Mapping(source = "player.nickHabbo", target = "nickHabbo")
     PlayerTeamDTO toDto(PlayerTeam playerTeam);
 }

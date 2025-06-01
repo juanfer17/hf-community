@@ -81,8 +81,8 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
-    public List<TeamDTO> getTeamsByDt(Long dtId) {
-        return teamRepository.findByHeadCoachId(dtId).stream()
+    public List<TeamDTO> getTeamsByDt(Long modalityId, Long dtId) {
+        return teamRepository.findByHeadCoachIdAndModalityId(dtId , modalityId).stream()
                 .map(teamMapper::toDto)
                 .collect(Collectors.toList());
     }

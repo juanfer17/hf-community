@@ -57,8 +57,11 @@ public class TeamController {
 
     @GetMapping("/dt/{dtId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<TeamDTO>> getTeamsByDt(@PathVariable Long dtId) {
-        return ResponseEntity.ok(teamService.getTeamsByDt(dtId));
+    public ResponseEntity<List<TeamDTO>> getTeamsByDt(
+            @PathVariable("modality") String modality,
+            @PathVariable Long dtId) {
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        return ResponseEntity.ok(teamService.getTeamsByDt(modalityId , dtId));
     }
 
     @DeleteMapping("/{id}")
