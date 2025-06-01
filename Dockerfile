@@ -1,18 +1,32 @@
-# Etapa de construcción
+# Etapa build
 FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
-COPY . .
-RUN chmod +x ./mvnw && ./mvnw -B -DskipTests clean package
 
-# Etapa de ejecución
-FROM eclipse-temurin:21-jdk
+# Copia solo pom.xml y mvnw para cachear dependencias
+COPY pom.xml mvnw ./
+RUN chmod +x ./mvnw && ./mvnw dependency:go-offline -B
+
+# Copia el código fuente
+COPY src ./src
+
+# Build sin tests para acelerar
+RUN ./mvnw clean package -DskipTests -B
+
+# Etapa runtime
+FROM eclipse-temurin:21-jdk-alpine
 WORKDIR /app
 
-# Copia el .jar generado desde la etapa anterior
+# Copiar jar desde build
 COPY --from=build /app/target/*.jar app.jar
 
-# Expone el puerto estándar de Spring Boot
+# Puerto expuesto
 EXPOSE 8080
 
-# Ejecuta el JAR
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Variables para limitar memoria JVM (ajustar según recursos Railway)
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseContainerSupport"
+
+# Perfil activo para producción (ajusta según tus profiles)
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Comando para arrancar la app, usando exec para manejo de señales correcto
+ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
