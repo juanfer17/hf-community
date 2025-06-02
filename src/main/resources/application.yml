@@ -3,7 +3,7 @@ spring:
     name: hf-community-hub
 
   datasource:
-    url: jdbc:postgresql://maglev.proxy.rlwy.net:23979/railway?sslmode=require
+    url: jdbc:postgresql://postgres.railway.internal:5432/railway
     username: postgres
     password: gZGoYuvBhEGDGNUsrofnhnsDRGfPcSkB
     driver-class-name: org.postgresql.Driver
