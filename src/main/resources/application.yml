@@ -3,10 +3,16 @@ spring:
     name: hf-community-hub
 
   datasource:
-    url: jdbc:postgresql://postgres-production-f699.up.railway.app:5432/railway
+    url: jdbc:postgresql://mainline.proxy.rlwy.net:45251/railway?sslmode=require
     username: postgres
-    password: gZGoYuvBhEGDGNUsrofnhnsDRGfPcSkB
+    password: vzUwvqMmSNiIAbNPQtvNaEauaqOLsEby
     driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+      connection-test-query: SELECT 1
+      connection-init-sql: SELECT 1
+      max-lifetime: 1800000
 
   jpa:
     hibernate:
