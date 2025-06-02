@@ -39,6 +39,7 @@ public class SecurityConfig {
                                 "/api/assistance",
                                 "/api/*/standings/*",
                                 "/api/*/teams",
+                                "/api/*/teams/*",
                                 "/api/*/news",
                                 "/api/*/callups",
                                 "/api/*/offers/*",
