@@ -15,4 +15,5 @@ COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
 
 # Ejecuta el JAR con el puerto que Railway asigna en $PORT
-ENTRYPOINT ["sh", "-c", "java -Dserver.port=$PORT -jar app.jar"]
+ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
+
