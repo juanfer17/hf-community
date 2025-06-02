@@ -24,7 +24,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://localhost:5173", "https://front-community-hf-production.up.railway.app")
+                .allowedOrigins("https://front-community-hf-production.up.railway.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*");
     }
