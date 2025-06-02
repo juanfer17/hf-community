@@ -11,9 +11,8 @@ WORKDIR /app
 # Copia el .jar generado desde la etapa anterior
 COPY --from=build /app/target/*.jar app.jar
 
-# Expone el puerto estándar de Spring Boot (Railway lo usa para healthcheck)
+# Expone el puerto estándar de Spring Boot
 EXPOSE 8080
 
-# Ejecuta el JAR con el puerto que Railway asigna en $PORT
-ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-Dserver.port=${PORT}", "-jar", "app.jar"]
-
+# Ejecuta el JAR
+ENTRYPOINT ["java", "-jar", "app.jar"]
