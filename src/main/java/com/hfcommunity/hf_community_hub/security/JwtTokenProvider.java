@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class JwtTokenProvider {
@@ -24,10 +26,10 @@ public class JwtTokenProvider {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
-    public String generateToken(Long userId, String role) {
+    public String generateToken(Long userId,  List<Map<String, Object>> roles) {
         return Jwts.builder()
                 .setSubject(String.valueOf(userId))
-                .claim("role", role)
+                .claim("roles", roles)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -57,5 +59,11 @@ public class JwtTokenProvider {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Map<String, String>> getRoles(String token) {
+        Claims claims = getClaims(token);
+        return (List<Map<String, String>>) claims.get("roles");
     }
 }

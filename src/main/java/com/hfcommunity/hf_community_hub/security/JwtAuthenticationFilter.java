@@ -12,6 +12,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -32,12 +34,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (jwtTokenProvider.validateToken(token)) {
                 Long userId = jwtTokenProvider.getUserId(token);
-                String role = jwtTokenProvider.getRole(token);
 
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+                List<Map<String, String>> roles = jwtTokenProvider.getRoles(token);
 
-                Authentication auth = new UsernamePasswordAuthenticationToken(userId, null, List.of(authority));
-                SecurityContextHolder.getContext().setAuthentication(auth);
+                if (roles != null && !roles.isEmpty()) {
+                    List<SimpleGrantedAuthority> authorities = roles.stream()
+                            .map(r -> {
+                                String role = r.get("role");
+                                String modality = r.get("modalityName");
+
+                                String authority = "ROLE_" + role.toUpperCase();
+                                if (modality != null && !modality.isBlank()) {
+                                    authority += "_" + modality.toUpperCase();
+                                }
+
+                                return new SimpleGrantedAuthority(authority);
+                            })
+                            .collect(Collectors.toList());
+
+                    Authentication auth = new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                } else {
+                    SecurityContextHolder.clearContext();
+                }
             }
         }
 

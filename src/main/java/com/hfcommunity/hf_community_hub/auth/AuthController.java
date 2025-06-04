@@ -2,6 +2,8 @@ package com.hfcommunity.hf_community_hub.auth;
 
 import com.hfcommunity.hf_community_hub.player.Player;
 import com.hfcommunity.hf_community_hub.player.PlayerRepository;
+import com.hfcommunity.hf_community_hub.playermodalityrol.PlayerModalityRole;
+import com.hfcommunity.hf_community_hub.playermodalityrol.PlayerModalityRoleRepository;
 import com.hfcommunity.hf_community_hub.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Base64;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -23,6 +24,7 @@ import java.util.UUID;
 public class AuthController {
 
     private final PlayerRepository playerRepo;
+    private final PlayerModalityRoleRepository playerModalityRoleRepository;
     private final JwtTokenProvider jwtProvider;
 
     @PostMapping("/register")
@@ -51,7 +53,6 @@ public class AuthController {
         player.setNickHabbo(dto.getNickHabbo());
         player.setSalt(salt);
         player.setPassword(hash);
-        player.setRole("jugador");
         player.setIsActive(true);
         player.setIsRegistered(true);
 
@@ -63,20 +64,38 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         Player player = playerRepo.findByEmail(loginDTO.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         String raw = loginDTO.getPassword() + player.getSalt();
 
         if (!verifyScryptPassword(raw, player.getPassword())) {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+            return ResponseEntity.status(401).body(Map.of("error", "Credenciales inválidas"));
         }
 
-        String token = jwtProvider.generateToken(player.getId(), player.getRole());
+        List<Map<String, Object>> roleList = playerModalityRoleRepository.findByPlayerId(player.getId()).stream()
+                .map(r -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("modalityName", r.getModality().getName());
+                    map.put("role", r.getRole().getName());
+                    return map;
+                })
+                .collect(Collectors.toList()); // mutable list
+
+        if (roleList.isEmpty()) {
+            Map<String, Object> defaultRole = new HashMap<>();
+            defaultRole.put("modalityName", null);
+            defaultRole.put("role", "JUGADOR");
+
+            roleList = new ArrayList<>();
+            roleList.add(defaultRole);
+        }
+
+        String token = jwtProvider.generateToken(player.getId(), roleList);
 
         return ResponseEntity.ok(Map.of(
                 "token", token,
                 "id", player.getId(),
-                "role", player.getRole(),
+                "roles", roleList,
                 "nickHabbo", player.getNickHabbo()
         ));
     }

@@ -1,5 +1,6 @@
 package com.hfcommunity.hf_community_hub.player;
 
+import com.hfcommunity.hf_community_hub.common.enums.ModalityEnum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,8 +48,13 @@ public class PlayerController {
 
     @PutMapping("/roles")
     @PreAuthorize("hasAnyRole('ADMIN', 'SUPERADMIN')")
-    public ResponseEntity<PlayerDTO> updateRole(@RequestParam Long id, @RequestParam String role, Authentication auth) {
-        String requesterRole = auth.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "").toLowerCase();
-        return ResponseEntity.ok(service.updateRole(id, role, requesterRole));
+    public ResponseEntity<PlayerDTO> updateRole(@RequestParam Long id,
+                                                @PathVariable("modality") String modality,
+                                                @RequestParam Long roleId,
+                                                Authentication auth) {
+
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        String requesterRole = auth.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "").toUpperCase();
+        return ResponseEntity.ok(service.updateRole(id, roleId, modalityId, requesterRole));
     }
 }

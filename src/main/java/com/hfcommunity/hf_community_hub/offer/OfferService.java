@@ -5,6 +5,7 @@ import com.hfcommunity.hf_community_hub.modality.Modality;
 import com.hfcommunity.hf_community_hub.modality.ModalityRepository;
 import com.hfcommunity.hf_community_hub.player.Player;
 import com.hfcommunity.hf_community_hub.player.PlayerRepository;
+import com.hfcommunity.hf_community_hub.playermodalityrol.PlayerModalityRoleRepository;
 import com.hfcommunity.hf_community_hub.playerteam.PlayerTeam;
 import com.hfcommunity.hf_community_hub.playerteam.PlayerTeamId;
 import com.hfcommunity.hf_community_hub.playerteam.PlayerTeamRepository;
@@ -30,6 +31,7 @@ public class OfferService {
     private final PlayerTeamRepository playerTeamRepository;
     private final ModalityRepository modalityRepository;
     private final OfferMapper offerMapper;
+    private final PlayerModalityRoleRepository playerModalityRoleRepository;
 
     public void createOffer(OfferRequest request, Long modalityId) {
 
@@ -39,8 +41,12 @@ public class OfferService {
         Player coach = playerRepository.findById(request.getCoachId())
                 .orElseThrow(() -> new NoSuchElementException("DT no encontrado"));
 
-        if (!"dt".equalsIgnoreCase(coach.getRole())) {
-            throw new IllegalArgumentException("Solo un DT puede hacer ofertas");
+        boolean isDTInModality = playerModalityRoleRepository
+                .findByPlayerIdAndModalityId(coach.getId(), modalityId).stream()
+                .anyMatch(r -> "DT".equalsIgnoreCase(r.getRole().getName()));
+
+        if (!isDTInModality) {
+            throw new IllegalArgumentException("Solo un DT puede hacer ofertas en esta modalidad");
         }
 
         Player player = playerRepository.findById(request.getPlayerId())
@@ -48,8 +54,6 @@ public class OfferService {
 
         Team team = teamRepository.findById(request.getTeamId())
                 .orElseThrow(() -> new NoSuchElementException("Equipo no encontrado"));
-
-
 
         if (team.getTournament() == null || team.getTournament().getModality() == null) {
             throw new IllegalStateException("El equipo no tiene torneo o modalidad asociada");

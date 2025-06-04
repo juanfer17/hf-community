@@ -61,7 +61,7 @@ public class TeamController {
             @PathVariable("modality") String modality,
             @PathVariable Long dtId) {
         Long modalityId = ModalityEnum.fromName(modality).getId();
-        return ResponseEntity.ok(teamService.getTeamsByDt(modalityId , dtId));
+        return ResponseEntity.ok(teamService.getTeamsByDt(modalityId, dtId));
     }
 
     @DeleteMapping("/{id}")

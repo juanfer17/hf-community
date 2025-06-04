@@ -7,6 +7,10 @@ import com.hfcommunity.hf_community_hub.modality.Modality;
 import com.hfcommunity.hf_community_hub.modality.ModalityRepository;
 import com.hfcommunity.hf_community_hub.player.Player;
 import com.hfcommunity.hf_community_hub.player.PlayerRepository;
+import com.hfcommunity.hf_community_hub.playermodalityrol.PlayerModalityRole;
+import com.hfcommunity.hf_community_hub.playermodalityrol.PlayerModalityRoleRepository;
+import com.hfcommunity.hf_community_hub.role.Role;
+import com.hfcommunity.hf_community_hub.role.RoleRepository;
 import com.hfcommunity.hf_community_hub.tournament.Tournament;
 import com.hfcommunity.hf_community_hub.tournament.TournamentRepository;
 import jakarta.transaction.Transactional;
@@ -28,6 +32,8 @@ public class TeamService {
     private final ModalityRepository modalityRepository;
     private final TeamMapper teamMapper;
     private final PlayerRepository playerRepository;
+    private final PlayerModalityRoleRepository playerModalityRoleRepository;
+    private final RoleRepository roleRepository;
 
     public TeamDTO createTeam(TeamCreateDTO dto, MultipartFile logo, Long modality) {
 
@@ -40,14 +46,27 @@ public class TeamService {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Categoría no encontrada"));
 
-        Player player = playerRepository.findByIdAndRole(dto.getDtId(), "dt")
-                .orElseThrow(() -> new IllegalArgumentException("Jugador no es DT"));
+        Player player = playerRepository.findById(dto.getDtId())
+                .orElseThrow(() -> new IllegalArgumentException("Jugador no encontrado"));
 
-
-        if (category.getModality() == null || !category.getModality().getName().equalsIgnoreCase(modalityEntity.getName())) {
+        if (category.getModality() == null ||
+                !category.getModality().getName().equalsIgnoreCase(modalityEntity.getName())) {
             throw new IllegalArgumentException("La modalidad proporcionada no coincide con la modalidad de la categoría.");
         }
 
+        // ✅ Verificar si el jugador ya es DT en ese torneo
+        boolean alreadyDtInTournament = teamRepository
+                .existsByHeadCoachIdAndTournamentId(dto.getDtId(), dto.getTournamentId());
+
+        if (alreadyDtInTournament) {
+            throw new IllegalArgumentException("Este jugador ya está registrado como DT en este torneo.");
+        }
+
+        Role dtRole = roleRepository.findByNameIgnoreCase("dt")
+                .orElseThrow(() -> new IllegalArgumentException("Rol DT no encontrado"));
+
+
+        // ✅ Crear y guardar el equipo
         Team team = new Team();
         team.setName(dto.getName());
         team.setTournament(tournament);
@@ -55,13 +74,23 @@ public class TeamService {
         team.setModality(modalityEntity);
         team.setLogoUrl(dto.getLogo());
 
-
         if (logo != null && !logo.isEmpty()) {
             team.setLogoUrl("/logos/" + logo.getOriginalFilename());
         }
 
-        return teamMapper.toDto(teamRepository.save(team));
+        Team savedTeam = teamRepository.save(team);
+
+        // ✅ Registrar rol DT en PlayerModalityRole
+        PlayerModalityRole modalityRole = new PlayerModalityRole();
+        modalityRole.setPlayer(player);
+        modalityRole.setModality(modalityEntity);
+        modalityRole.setRole(dtRole);
+
+        playerModalityRoleRepository.save(modalityRole);
+
+        return teamMapper.toDto(savedTeam);
     }
+
 
     public List<TeamDTO> getAllTeams(Long modalityId, Long tournamentId) {
         return teamRepository.findByModality_IdAndTournament_Id(modalityId, tournamentId ).stream()

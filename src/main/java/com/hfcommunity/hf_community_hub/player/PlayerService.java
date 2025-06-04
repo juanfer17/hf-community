@@ -8,6 +8,6 @@ public interface PlayerService {
     PlayerDTO updateNickhabbo(Long id, String newNick);
     void deletePlayer(Long id);
     List<PlayerDTO> getAllWithRoles();
-    PlayerDTO updateRole(Long playerId, String newRole, String requesterRole);
+    PlayerDTO updateRole(Long playerId, Long roleId, Long modalityId, String requesterRole);
 }
 

@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.Map;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,5 +16,5 @@ public class PlayerDTO {
     private Long id;
     private String name;
     private String nickhabbo;
-    private String role;
+    private List<Map<String, Object>> roles;
 }

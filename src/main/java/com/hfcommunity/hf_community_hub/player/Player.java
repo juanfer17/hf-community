@@ -39,24 +39,10 @@ public class Player {
     @Column(name = "nickhabbo", nullable = false, unique = true)
     private String nickHabbo;
 
-    @Column(name = "role", nullable = false)
-    private String role = "player";
-
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<PlayerTeam> playerTeams;
 
-    public Boolean isSuperAdmin() {
-        return this.role.equals("superadmin");
-    }
-
-    public Boolean isAdmin() {
-        return this.role.equals("admin");
-    }
-
-    public Boolean isCoach() {
-        return this.role.equals("coach");
-    }
 }
