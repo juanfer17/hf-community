@@ -43,7 +43,8 @@ public class SecurityConfig {
                                 "/api/*/news",
                                 "/api/*/callups",
                                 "/api/*/offers/*",
-                                "/api/*/player-teams/**"
+                                "/api/*/player-teams/**",
+                                "/health"
                         ).permitAll()
                         .requestMatchers("/api/sitemap").hasRole("SUPERADMIN")
                         .anyRequest().authenticated()
