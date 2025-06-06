@@ -6,4 +6,5 @@ import java.util.List;
 public interface PlayerModalityRoleRepository extends JpaRepository<PlayerModalityRole, Long> {
     List<PlayerModalityRole> findByPlayerId(Long playerId);
     List<PlayerModalityRole> findByPlayerIdAndModalityId(Long playerId, Long modalityId);
+    List<PlayerModalityRole> findByPlayer_IdAndRole_NameIgnoreCase(Long playerId, String roleName);
 }
