@@ -13,27 +13,15 @@ public class PlayerStatisticsService {
     private final PlayerStatisticsMapper mapper;
 
     public List<PlayerStatisticsDTO> getTopScorersByTournamentAndModality(Long tournamentId, Long modalityId) {
-        return repository
-                .findTop10ByMatch_Tournament_IdAndModality_IdOrderByGoalsDesc(tournamentId, modalityId)
-                .stream()
-                .map(mapper::toDTO)
-                .toList();
+        return repository.findTop10ScorersByTournamentIdAndModalityId(tournamentId, modalityId);
     }
 
     public List<PlayerStatisticsDTO> getTopAssistProviders(Long tournamentId, Long modalityId) {
-        return repository
-                .findTop10ByMatch_Tournament_IdAndModality_IdOrderByAssistsDesc(tournamentId, modalityId)
-                .stream()
-                .map(mapper::toDTO)
-                .toList();
+        return repository.findTop10AssistantsByTournamentIdAndModalityId(tournamentId, modalityId);
     }
 
     public List<PlayerStatisticsDTO> getTopOwnGoalScorers(Long tournamentId, Long modalityId) {
-        return repository
-                .findTop10ByMatch_Tournament_IdAndModality_IdOrderByOwnGoalsDesc(tournamentId, modalityId)
-                .stream()
-                .map(mapper::toDTO)
-                .toList();
+        return repository.findTop10OwnGoalsByTournamentIdAndModalityId(tournamentId, modalityId);
     }
 
 

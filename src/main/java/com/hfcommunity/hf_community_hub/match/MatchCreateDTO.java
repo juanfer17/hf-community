@@ -3,6 +3,8 @@ package com.hfcommunity.hf_community_hub.match;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class MatchCreateDTO {
@@ -18,4 +20,5 @@ public class MatchCreateDTO {
     private Long mentionTeamBId;
     private String videoLink;
     private String observations;
+    private List<PlayerStatisticsCreateDTO> playerStatistics;
 }
