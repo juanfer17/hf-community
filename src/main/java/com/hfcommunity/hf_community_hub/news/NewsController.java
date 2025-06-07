@@ -2,6 +2,7 @@ package com.hfcommunity.hf_community_hub.news;
 
 import com.hfcommunity.hf_community_hub.common.enums.ModalityEnum;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +15,16 @@ public class NewsController {
 
     private final NewsService newsService;
 
-    @PostMapping
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<NewsDTO> createNews(
             @PathVariable("modality") String modality,
-            @RequestBody NewsRequest request
+            @RequestBody(required = false) NewsRequest jsonRequest,
+            @ModelAttribute(binding = false) NewsRequest formRequest
     ) {
-        Long modalityId = ModalityEnum.fromName(modality).getId();
-        request.setModality(modalityId);
+        NewsRequest request = jsonRequest != null ? jsonRequest : formRequest;
+        if (request.getModality() == null || request.getModality().isEmpty()) {
+            request.setModality(modality);
+        }
         NewsDTO created = newsService.createNews(request);
         return ResponseEntity.ok(created);
     }
@@ -34,14 +38,18 @@ public class NewsController {
         return ResponseEntity.ok(newsList);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Void> updateNews(
             @PathVariable("modality") String modality,
             @PathVariable Long id,
-            @RequestBody NewsRequest request
+            @RequestBody(required = false) NewsRequest jsonRequest,
+            @ModelAttribute(binding = false) NewsRequest formRequest
     ) {
-        Long modalityId = ModalityEnum.fromName(modality).getId();
-        request.setModality(modalityId);
+        NewsRequest request = jsonRequest != null ? jsonRequest : formRequest;
+        // If modality is not set in the request, use the one from the path
+        if (request.getModality() == null || request.getModality().isEmpty()) {
+            request.setModality(modality);
+        }
         newsService.updateNews(id, request);
         return ResponseEntity.noContent().build();
     }

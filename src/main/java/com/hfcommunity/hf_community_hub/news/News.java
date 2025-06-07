@@ -21,7 +21,7 @@ public class News {
     @Column(name = "titulo")
     private String title;
 
-    @Column(name = "contenido")
+    @Column(name = "contenido", columnDefinition = "TEXT")
     private String content;
 
     @Column(name = "fecha_publicacion")
@@ -34,4 +34,3 @@ public class News {
     @JoinColumn(name = "modalidad_id")
     private Modality modality;
 }
-

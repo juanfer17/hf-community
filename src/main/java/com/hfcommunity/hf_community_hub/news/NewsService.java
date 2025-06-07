@@ -1,5 +1,6 @@
 package com.hfcommunity.hf_community_hub.news;
 
+import com.hfcommunity.hf_community_hub.common.enums.ModalityEnum;
 import com.hfcommunity.hf_community_hub.modality.Modality;
 import com.hfcommunity.hf_community_hub.modality.ModalityRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,12 @@ public class NewsService {
     private final ModalityRepository modalityRepository;
 
     public NewsDTO createNews(NewsRequest request) {
-        Modality modality = findModalityById(request.getModality());
+        Modality modality = findModalityByNameOrId(request.getModality());
 
         News news = newsMapper.toEntity(request);
         news.setModality(modality);
+        news.setContent(request.getContent());
+        news.setImageUrls(request.getImageUrl());
         news.setPublicationDate(LocalDateTime.now());
 
         newsRepository.save(news);
@@ -42,7 +45,7 @@ public class NewsService {
         News existing = newsRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Noticia no encontrada"));
 
-        Modality modality = findModalityById(request.getModality());
+        Modality modality = findModalityByNameOrId(request.getModality());
 
         newsMapper.updateEntityFromRequest(request, existing);
         existing.setModality(modality);
@@ -60,5 +63,17 @@ public class NewsService {
     private Modality findModalityById(Long id) {
         return modalityRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Modalidad no encontrada"));
+    }
+
+    private Modality findModalityByNameOrId(String modalityNameOrId) {
+        try {
+            // Try to parse as Long (ID)
+            Long id = Long.parseLong(modalityNameOrId);
+            return findModalityById(id);
+        } catch (NumberFormatException e) {
+            // If not a number, treat as modality name
+            Long id = ModalityEnum.fromName(modalityNameOrId).getId();
+            return findModalityById(id);
+        }
     }
 }
