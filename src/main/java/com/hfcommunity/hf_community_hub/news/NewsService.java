@@ -19,8 +19,8 @@ public class NewsService {
     private final NewsMapper newsMapper;
     private final ModalityRepository modalityRepository;
 
-    public NewsDTO createNews(NewsRequest request) {
-        Modality modality = findModalityByNameOrId(request.getModality());
+    public NewsDTO createNews(Long modalityId, NewsRequest request) {
+        Modality modality = findModalityById(modalityId);
 
         News news = newsMapper.toEntity(request);
         news.setModality(modality);

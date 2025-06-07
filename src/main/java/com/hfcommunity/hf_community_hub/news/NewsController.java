@@ -21,11 +21,8 @@ public class NewsController {
             @RequestBody(required = false) NewsRequest jsonRequest,
             @ModelAttribute(binding = false) NewsRequest formRequest
     ) {
-        NewsRequest request = jsonRequest != null ? jsonRequest : formRequest;
-        if (request.getModality() == null || request.getModality().isEmpty()) {
-            request.setModality(modality);
-        }
-        NewsDTO created = newsService.createNews(request);
+        Long modalityId = ModalityEnum.fromName(modality).getId();
+        NewsDTO created = newsService.createNews(modalityId, jsonRequest);
         return ResponseEntity.ok(created);
     }
 

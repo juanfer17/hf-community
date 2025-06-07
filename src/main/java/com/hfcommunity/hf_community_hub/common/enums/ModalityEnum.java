@@ -4,9 +4,9 @@ import java.util.Arrays;
 
 public enum ModalityEnum {
     AIC(1L),
-    HES(2L),
+    HFA(2L),
     OHB(3L),
-    HFA(4L);
+    HES(4L);
 
     private final Long id;
 
